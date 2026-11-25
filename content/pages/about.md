@@ -1,6 +1,6 @@
-<svelte:head>
-	<title>About</title>
-</svelte:head>
+---
+title: About
+---
 
 # About
 

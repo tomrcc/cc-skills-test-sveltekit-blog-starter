@@ -1,7 +1,7 @@
 <script>
 	import { currentPage, isMenuOpen } from '../assets/js/store';
 
-	let { href, children } = $props();
+	let { href, children, ...attributes } = $props();
 
 	let isCurrentPage = $derived($currentPage.startsWith(href));
 
@@ -12,7 +12,7 @@
 	};
 </script>
 
-<li>
+<li {...attributes}>
 	<a
 		{href}
 		onclick={maybeCloseMenu}

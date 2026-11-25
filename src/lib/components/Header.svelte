@@ -3,7 +3,7 @@
 
 	import MainNav from './MainNav.svelte'
 	import HamburgerMenuButton from './HamburgerMenuButton.svelte'
-	import { siteTitle } from '$lib/config'
+	import site from '$lib/data/site.json'
 
 	const focusMain = () => {
 		const main = document.querySelector('main');
@@ -18,7 +18,7 @@
 	</a>
 	
 	<a href="/" class="site-title">
-		{siteTitle}
+		<editable-text data-prop="@data[site].title">{site.title}</editable-text>
 	</a>
 	
 	<HamburgerMenuButton />

@@ -1,19 +1,18 @@
 <script>
 	import PostsList from '$lib/components/PostsList.svelte'
 	import Pagination from '$lib/components/Pagination.svelte'
-	import { siteDescription } from '$lib/config'
 
 	let { data } = $props();
 </script>
 
 
 <svelte:head>
-	<title>Blog</title>
-	<meta data-key="description" name="description" content={siteDescription}>
+	<title>{data.page.title}</title>
+	<meta data-key="description" name="description" content={data.page.description}>
 </svelte:head>
 
-<h1>Blog</h1>
+<h1 data-editable="text" data-prop="title">{data.page.title}</h1>
 
-<PostsList posts={data.posts} />
+<PostsList posts={data.posts} editable />
 
 <Pagination currentPage={1} totalPosts={data.total} />

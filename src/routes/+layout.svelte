@@ -5,11 +5,12 @@
 	import Header from '$lib/components/Header.svelte';
 	import Footer from '$lib/components/Footer.svelte';
 	import { currentPage, isMenuOpen } from '../lib/assets/js/store.js';
-	import { navItems } from '$lib/config';
+	import navigation from '$lib/data/navigation.json';
 	import { preloadCode } from '$app/navigation';
 	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
-	import { siteTitle, siteURL } from '$lib/config.js';
+	import { EditableRegions } from '@cloudcannon/editable-regions/svelte';
+	import site from '$lib/data/site.json';
 	let { data, children } = $props();
 
 	const transitionIn = { delay: 150, duration: 150 };
@@ -27,12 +28,17 @@
 	 * This pre-fetches all top-level routes on the site in the background for faster loading.
 	 * https://kit.svelte.dev/docs/modules#$app-navigation-preloaddata
 	 *
-	 * Any route added in src/lib/config.js will be preloaded automatically. You can add your
+	 * Any route added to src/lib/data/navigation.json is preloaded automatically. You can add your
 	 * own preloadData() calls here, too.
 	 **/
 	onMount(() => {
-		const navRoutes = navItems.map((item) => item.route);
+		const navRoutes = navigation.items.map((item) => item.route);
 		preloadCode(...navRoutes);
+
+		if (!window.inEditorMode) return;
+		import('$lib/cloudcannon/registerComponents.js').catch((error) => {
+			console.warn('Failed to load CloudCannon component registration:', error);
+		});
 	});
 </script>
 
@@ -52,8 +58,8 @@
 	<link
 		rel="alternate"
 		type="application/rss+xml"
-		title={siteTitle}
-		href="http://{siteURL}/api/rss.xml"
+		title={site.title}
+		href="http://{site.url}/api/rss.xml"
 	/>
 </svelte:head>
 
@@ -61,7 +67,7 @@
 	The below markup is used on every page in the site. The <slot> is where the page's
 	actual contents will show up.
 -->
-<div class="layout" class:open={$isMenuOpen}>
+<EditableRegions tag="div" class={$isMenuOpen ? 'layout open' : 'layout'}>
 	<Header />
 	{#key data.path}
 		<main id="main" tabindex="-1" in:fade|global={transitionIn} out:fade|global={transitionOut}>
@@ -69,4 +75,4 @@
 		</main>
 	{/key}
 	<Footer />
-</div>
+</EditableRegions>

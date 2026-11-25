@@ -15,3 +15,8 @@
 	list-style-type: none;
 	padding-left: 0;
 }
+/* Room for the Visual Editor's "Add item" button when an array region is empty. */
+.cms-editor-active [data-editable="array"]:not(:has(> [data-editable="array-item"])) {
+	min-width: 8rem;
+	min-height: 2.5rem;
+}

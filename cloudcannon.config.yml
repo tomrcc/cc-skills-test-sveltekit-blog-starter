@@ -1,0 +1,394 @@
+paths:
+  static: static
+  uploads: static/images
+timezone: Etc/UTC
+markdown:
+  engine: commonmark
+  options:
+    escape_snippets_in_code_blocks: true
+_editables:
+  content:
+    format: p h2 h3 h4
+    bold: true
+    italic: true
+    link: true
+    bulletedlist: true
+    numberedlist: true
+    blockquote: true
+    code_inline: true
+    code_block: true
+    horizontalrule: true
+    image: true
+    snippet: true
+    removeformat: true
+    undo: true
+    redo: true
+_inputs:
+  _schema:
+    hidden: true
+collection_groups:
+  - heading: Content
+    collections:
+      - pages
+      - posts
+  - heading: Site
+    collections:
+      - data
+collections_config:
+  pages:
+    path: content/pages
+    glob:
+      - "*.md"
+    url: /[full_slug]
+    name: Pages
+    icon: wysiwyg
+    disable_add_folder: true
+    create:
+      path: "[relative_base_path]/{title|slugify}.[ext]"
+    new_preview_url: /
+    _enabled_editors:
+      - visual
+      - content
+      - data
+    schemas:
+      default:
+        path: .cloudcannon/schemas/page.md
+        name: Page
+        icon: article
+      page_builder:
+        path: .cloudcannon/schemas/page-builder.md
+        name: Page Builder
+        icon: wysiwyg
+        new_preview_url: /contact
+        _enabled_editors:
+          - visual
+          - data
+      blog_index:
+        path: .cloudcannon/schemas/blog-index.md
+        name: Blog Index
+        icon: list_alt
+    add_options:
+      - name: Page
+        schema: default
+        icon: article
+      - name: Page Builder
+        schema: page_builder
+        icon: wysiwyg
+    _inputs:
+      title:
+        type: text
+        comment: Shown in the browser tab and search results. Page Builder pages and the Blog page also show it as the heading.
+      description:
+        type: text
+        comment: Shown in search results.
+      content_blocks:
+        type: array
+        label: Page Sections
+        options:
+          structures: _structures.content_blocks
+  posts:
+    path: src/lib/posts
+    glob:
+      - "*.md"
+    url: /blog/[slug]
+    name: Posts
+    icon: post_add
+    disable_add_folder: true
+    create:
+      path: "[relative_base_path]/{title|slugify}.[ext]"
+    new_preview_url: /blog/heading-links-example
+    _enabled_editors:
+      - visual
+      - content
+      - data
+    schemas:
+      default:
+        path: .cloudcannon/schemas/post.md
+        name: Post
+        icon: post_add
+    _inputs:
+      title:
+        type: text
+      date:
+        type: date
+        label: Published
+        instance_value: NOW
+      updated:
+        type: date
+        label: Updated
+        instance_value: NOW
+      categories:
+        type: multiselect
+        comment: Add new categories in Site > Data > Categories.
+        options:
+          values: data.categories
+      coverImage:
+        type: image
+        label: Cover Image
+      coverWidth:
+        type: number
+        label: Cover Width
+        comment: Width part of the cover's aspect ratio, such as 16 for 16:9.
+        options:
+          min: 1
+      coverHeight:
+        type: number
+        label: Cover Height
+        comment: Height part of the cover's aspect ratio, such as 9 for 16:9.
+        options:
+          min: 1
+      excerpt:
+        type: textarea
+        comment: Shown in post lists, search results and the RSS feed.
+  data:
+    path: src/lib/data
+    glob:
+      - "*.json"
+    name: Data
+    icon: settings
+    disable_url: true
+    disable_add: true
+    disable_add_folder: true
+    disable_file_actions: true
+    _enabled_editors:
+      - data
+data_config:
+  site:
+    path: src/lib/data/site.json
+  navigation:
+    path: src/lib/data/navigation.json
+  footer:
+    path: src/lib/data/footer.json
+  categories:
+    path: src/lib/data/categories.json
+file_config:
+  - glob: src/lib/data/site.json
+    _inputs:
+      $:
+        type: object
+        options:
+          preview:
+            icon: settings
+      title:
+        type: text
+        label: Site Title
+      description:
+        type: text
+        label: Site Description
+        comment: Used in search results and the RSS feed.
+      url:
+        type: text
+        label: Site Domain
+        comment: The live domain without https://, such as example.com. Used in the RSS feed.
+      link:
+        type: url
+        label: Site Link
+        comment: The link for the site in the RSS feed.
+      author:
+        type: text
+        label: Footer Credit
+        comment: Shown after the year in the footer.
+  - glob: src/lib/data/navigation.json
+    _inputs:
+      $:
+        type: object
+        options:
+          preview:
+            icon: menu
+      items:
+        type: array
+        label: Menu Links
+        options:
+          structures: _structures.nav_links
+  - glob: src/lib/data/footer.json
+    _inputs:
+      $:
+        type: object
+        options:
+          preview:
+            icon: bottom_navigation
+      links:
+        type: array
+        label: Footer Links
+        comment: Shown before the menu links in the footer.
+        options:
+          structures: _structures.nav_links
+  - glob: src/lib/data/categories.json
+    _inputs:
+      $:
+        type: array
+        label: Categories
+        comment: Lowercase, one word or hyphenated. Each category used by a post gets its own page.
+      $[*]:
+        type: text
+        label: Category
+_structures:
+  nav_links:
+    style: modal
+    values:
+      - label: Link
+        icon: link
+        picker_preview:
+          text:
+            - Link
+          icon:
+            - link
+        preview:
+          text:
+            - key: title
+            - Link
+          subtext:
+            - key: route
+          icon:
+            - link
+        value:
+          title:
+          route:
+        _inputs:
+          title:
+            type: text
+            label: Label
+          route:
+            type: url
+            label: Link
+  content_blocks:
+    values:
+      - label: Rich Text
+        icon: article
+        picker_preview:
+          text:
+            - Rich Text
+          icon:
+            - article
+        preview:
+          text:
+            - key: content
+            - Rich Text
+          icon:
+            - article
+        value:
+          _type: rich_text
+          content:
+        _inputs:
+          content:
+            type: html
+            options:
+              format: p h2 h3
+              bold: true
+              italic: true
+              link: true
+              bulletedlist: true
+              numberedlist: true
+              blockquote: true
+              code_inline: true
+              removeformat: true
+              undo: true
+              redo: true
+      - label: Callout
+        icon: info
+        picker_preview:
+          text:
+            - Callout
+          icon:
+            - info
+        preview:
+          text:
+            - key: content
+            - Callout
+          icon:
+            - info
+        value:
+          _type: callout
+          content:
+        _inputs:
+          content:
+            type: html
+            options:
+              bold: true
+              italic: true
+              link: true
+              code_inline: true
+              removeformat: true
+              undo: true
+              redo: true
+      - label: Contact Form
+        icon: contact_mail
+        picker_preview:
+          text:
+            - Contact Form
+          icon:
+            - contact_mail
+        preview:
+          text:
+            - key: submit_label
+            - Contact Form
+          subtext:
+            - Contact Form
+          icon:
+            - contact_mail
+        value:
+          _type: form
+          inbox_key:
+          name_label: Name
+          name_placeholder: First name
+          email_label: Email
+          email_placeholder: Email address
+          choices_legend: Which option?
+          choices:
+            - Option 1
+            - Option 2
+            - Option 3
+          checkbox_label: Sign me up for something!
+          submit_label: Do nothing!
+        _inputs:
+          inbox_key:
+            type: text
+            label: Inbox Key
+            comment: The key of the Inbox that receives submissions, from Site Settings > Inbox.
+          name_label:
+            type: text
+          name_placeholder:
+            type: text
+          email_label:
+            type: text
+          email_placeholder:
+            type: text
+          choices_legend:
+            type: text
+            label: Choices Heading
+          choices:
+            type: array
+            label: Choices
+          choices[*]:
+            type: text
+            label: Choice
+          checkbox_label:
+            type: text
+          submit_label:
+            type: text
+            label: Button Text
+_snippets:
+  callout:
+    template: mdx_paired_component
+    inline: false
+    preview:
+      text: Callout
+      icon: info
+    picker_preview:
+      text: Callout
+      icon: info
+    definitions:
+      component_name: Callout
+      content_key: content
+      named_args: []
+    _inputs:
+      content:
+        type: html
+        options:
+          bold: true
+          italic: true
+          link: true
+          code_inline: true
+          removeformat: true
+          undo: true
+          redo: true

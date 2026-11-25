@@ -1,11 +1,13 @@
 <!-- This file renders each individual blog post for reading. Be sure to update the svelte:head below -->
 <script>
+	import { formatDate } from '$lib/assets/js/formatDate';
+
 	let { data } = $props();
 
 	let title = $derived(data.meta.title);
 	let excerpt = $derived(data.meta.excerpt);
-	let date = $derived(data.meta.date);
-	let updated = $derived(data.meta.updated);
+	let date = $derived(formatDate(data.meta.date));
+	let updated = $derived(formatDate(data.meta.updated));
 	let coverImage = $derived(data.meta.coverImage);
 	let coverWidth = $derived(data.meta.coverWidth);
 	let coverHeight = $derived(data.meta.coverHeight);
@@ -30,16 +32,20 @@
 
 <article class="post">
 	<!-- You might want to add an alt frontmatter attribute. If not, leaving alt blank here works, too. -->
-	<img
-		class="cover-image"
-		src={coverImage}
-		alt=""
-		style="aspect-ratio: {coverWidth} / {coverHeight};"
-		width={coverWidth}
-		height={coverHeight}
-	/>
+	{#if coverImage}
+		<img
+			class="cover-image"
+			src={coverImage}
+			alt=""
+			style="aspect-ratio: {coverWidth} / {coverHeight};"
+			width={coverWidth}
+			height={coverHeight}
+			data-editable="image"
+			data-prop-src="coverImage"
+		/>
+	{/if}
 
-	<h1>{title}</h1>
+	<h1 data-editable="text" data-prop="title">{title}</h1>
 
 	<div class="meta">
 		<b>Published:</b>
@@ -49,7 +55,9 @@
 		{updated}
 	</div>
 
-	<PostContent />
+	<div data-editable="text" data-type="block" data-prop="@content">
+		<PostContent />
+	</div>
 
 	{#if categories}
 		<aside class="post-footer">

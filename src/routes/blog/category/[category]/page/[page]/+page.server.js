@@ -1,6 +1,14 @@
 import { redirect } from '@sveltejs/kit'
 import { postsPerPage } from '$lib/config'
 import fetchPosts from '$lib/assets/js/fetchPosts'
+import { allPosts, allCategories, pageNumbers } from '$lib/assets/js/postEntries'
+
+export const entries = async () => {
+	const posts = await allPosts()
+	return (await allCategories()).flatMap((category) =>
+		pageNumbers(posts.filter((post) => post.categories.includes(category)).length).map((page) => ({ category, page }))
+	)
+}
 
 export const load = async ({ url, params, fetch }) => {
 	const page = parseInt(params.page) || 1

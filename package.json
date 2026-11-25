@@ -1,6 +1,7 @@
 {
 	"name": "sveltekit-blog-starter",
 	"version": "2.0.2",
+	"packageManager": "npm@11.19.1",
 	"scripts": {
 		"dev": "vite dev",
 		"build": "vite build",
@@ -23,5 +24,8 @@
 		"svelte": "^5.46.4",
 		"vite": "^8.0.0"
 	},
-	"type": "module"
+	"type": "module",
+	"dependencies": {
+		"@cloudcannon/editable-regions": "^0.0.22"
+	}
 }

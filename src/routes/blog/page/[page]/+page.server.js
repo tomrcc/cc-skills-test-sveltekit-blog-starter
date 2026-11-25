@@ -1,6 +1,9 @@
 import { postsPerPage } from '$lib/config'
 import fetchPosts from '$lib/assets/js/fetchPosts'
 import { redirect } from '@sveltejs/kit'
+import { allPosts, pageNumbers } from '$lib/assets/js/postEntries'
+
+export const entries = async () => pageNumbers((await allPosts()).length).map((page) => ({ page }))
 
 export const load = async ({ url, params, fetch }) => {
   const page = parseInt(params.page) || 1

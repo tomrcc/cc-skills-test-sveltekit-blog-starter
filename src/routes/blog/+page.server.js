@@ -1,3 +1,5 @@
+import { metadata as page } from '../../../content/pages/blog.md'
+
 export const load = async ({ url, fetch }) => {
 	const postRes = await fetch(`${url.origin}/api/posts.json`)
 	const posts = await postRes.json()
@@ -5,5 +7,5 @@ export const load = async ({ url, fetch }) => {
 	const totalRes = await fetch(`${url.origin}/api/posts/count`)
 	const total = await totalRes.json()
 
-	return { posts, total }
+	return { page, posts, total }
 }

@@ -2,7 +2,7 @@
 <script>
 	import PostsList from '$lib/components/PostsList.svelte'
 	import Pagination from '$lib/components/Pagination.svelte'
-	import { siteDescription } from '$lib/config'
+	import site from '$lib/data/site.json'
 
 	let { data } = $props();
 	let page = $derived(data.page)
@@ -16,7 +16,7 @@
 
 <svelte:head>
 	<title>Blog category - page {page}</title>
-	<meta data-key="description" name={siteDescription}>
+	<meta data-key="description" name={site.description}>
 </svelte:head>
 
 

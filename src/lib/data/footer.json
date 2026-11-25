@@ -1,0 +1,6 @@
+{
+  "links": [
+    { "title": "RSS", "route": "/api/rss.xml" },
+    { "title": "Home", "route": "/" }
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "title": "My Awesome Blog",
+  "description": "Built with the SvelteKit Static Blog Starter",
+  "url": "example.com",
+  "link": "https://github.com/josh-collinsworth/sveltekit-blog-starter",
+  "author": "- find and change this text in src/lib/config.js"
+}

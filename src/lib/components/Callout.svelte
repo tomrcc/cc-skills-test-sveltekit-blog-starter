@@ -4,10 +4,10 @@
 	 * @property {import('svelte').Snippet} [children]
 	 */
 
-	/** @type {Props} */
-	let { children } = $props();
+	/** @type {Props & Record<string, unknown>} */
+	let { children, ...attributes } = $props();
 </script>
 
-<div class="callout">
+<div class="callout" {...attributes}>
 	{@render children?.()}
 </div>

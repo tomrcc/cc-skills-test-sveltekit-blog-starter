@@ -1,4 +1,7 @@
 import { error } from '@sveltejs/kit'
+import { allPosts } from '$lib/assets/js/postEntries'
+
+export const entries = async () => (await allPosts()).map(({ slug }) => ({ post: slug }))
 
 export const load = async ({ params }) => {
 	try {	
