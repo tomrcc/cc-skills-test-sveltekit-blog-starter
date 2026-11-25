@@ -1,19 +1,19 @@
 ---
-title: "Syntax highlighting with mdsvex"
-date: "2023-01-05"
-updated: "2023-01-05"
+_schema: default
+title: Syntax highlighting with mdsvex
+date: 2023-01-05T00:00:00Z
+updated: 2023-01-05T00:00:00Z
 categories:
-  - "sveltekit"
-  - "web"
-  - "css"
-  - "markdown"
-coverImage: "/images/linus-nylund-Q5QspluNZmM-unsplash.jpg"
+  - sveltekit
+  - web
+  - css
+  - markdown
+coverImage: /images/linus-nylund-Q5QspluNZmM-unsplash.jpg
 coverWidth: 16
 coverHeight: 9
 excerpt: This post shows you how syntax highlighting works here.
 ---
-
-mdsvex has automatic, built-in syntax highlighting with [Prism.js](https://prismjs.com/); just include the language name after the triple backticks, like so:
+mdsvex TOM! has automatic, built-in syntax highlighting with [Prism.js](https://prismjs.com/); just include the language name after the triple backticks, like so:
 
 ```
 \```css
@@ -40,6 +40,7 @@ Here's how you'd do JavaScript:
 ```
 
 Highlighted code sample:
+
 ```js
 const invertNumberInRange = (num, range) => {
 	return range - num;
