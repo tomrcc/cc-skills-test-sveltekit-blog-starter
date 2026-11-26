@@ -116,3 +116,58 @@
  .token.entity {
 	 cursor: help;
  }
+
+/* The same colours as text ranges, for code blocks in the Visual Editor (src/lib/cloudcannon/highlightCode.js). */
+::highlight(prism-comment),
+::highlight(prism-prolog),
+::highlight(prism-doctype),
+::highlight(prism-cdata) {
+	color: #6272a4;
+}
+
+::highlight(prism-punctuation),
+::highlight(prism-operator),
+::highlight(prism-entity),
+::highlight(prism-url),
+::highlight(prism-variable),
+.language-css::highlight(prism-string) {
+	color: #f8f8f2;
+}
+
+::highlight(prism-property),
+::highlight(prism-tag),
+::highlight(prism-constant),
+::highlight(prism-symbol),
+::highlight(prism-deleted) {
+	color: #ff79c6;
+}
+
+::highlight(prism-boolean),
+::highlight(prism-number) {
+	color: #bd93f9;
+}
+
+::highlight(prism-selector),
+::highlight(prism-attr-name),
+::highlight(prism-string),
+::highlight(prism-char),
+::highlight(prism-builtin),
+::highlight(prism-inserted) {
+	color: #50fa7b;
+}
+
+::highlight(prism-atrule),
+::highlight(prism-attr-value),
+::highlight(prism-function),
+::highlight(prism-class-name) {
+	color: #f1fa8c;
+}
+
+::highlight(prism-keyword) {
+	color: #8be9fd;
+}
+
+::highlight(prism-regex),
+::highlight(prism-important) {
+	color: #ffb86c;
+}

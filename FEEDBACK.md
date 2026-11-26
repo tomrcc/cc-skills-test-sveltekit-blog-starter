@@ -83,3 +83,14 @@ All editor checks for this site are done. Tom skipped the Inbox form check (out 
   - The audit flagged the file only as a save risk.
   - `cloudcannon-dev-server` says to ask the user rather than drive the editor. The minimal-site approach worked and could be documented.
 - Not fixed, by choice: the editor shows the backslashes (`\```css`), while mdsvex drops them on the built page. A four-backtick outer fence would fix that but changes content, and isn't tested against an editor save.
+- Hosted re-check after the CSS fix: the two fence-syntax blocks show their text. No code block in the editor has syntax highlighting: the `@content` region shows the editor's own rendering of the markdown, without mdsvex's Prism output. The backslashes (`\```css`) also show in the editor but not on the built page.
+
+## Fix round 2: highlighting in the Visual Editor
+
+- Found: CloudCannon has no built-in way to do it. The editor owns the `<pre><code>` markup in `@content`, and running Prism over it would break editing.
+- Built: editor-only `src/lib/cloudcannon/highlightCode.js`, called from `registerComponents.js`. It tokenises code blocks with Prism (manual mode) and colours them with CSS Custom Highlight ranges (`::highlight(prism-*)` in `static/css/prism.css`), so the markup isn't touched. `prismjs` and `prism-svelte` are now devDependencies (already installed through mdsvex). Ranges can't set bold or italic.
+- Checked on a minimal site on `cloudcannon dev --app-sync` with Playwright: blocks are coloured, the editor's code markup has 0 spans, edits inside a highlighted block save, and the escaped fences stay byte-identical. Outside editor mode, the Prism chunk is never requested and the built page is unchanged.
+- Backslashes not changed. A four-backtick or `~~~` outer fence breaks on save, because CloudCannon rewrites the outer fence to three backticks. `~~~` plus `markdown.options.code_block_fences: "~~~"` round-trips, but then every save rewrites all of the file's fences to `~~~`.
+- Skill gaps:
+  - Nothing on how the editor renders code blocks without the site's highlighter.
+  - Nothing on `code_block_fences`, or on content that shows fence syntax.
