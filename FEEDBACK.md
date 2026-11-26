@@ -54,4 +54,32 @@ Orchestrator checks (Playwright):
 
 ## Tom's testing
 
-- Local `cloudcannon dev`: every page shows the site's own 404 in the Visual Editor. Posts show "Unknown variable dynamic import: ../../../lib/posts/<slug>.md". The dev server serves the build at `/__output/<route>.html`, and SvelteKit's router reads that path after hydration. I reproduced it in Playwright. `cloudcannon-dev-server/troubleshooting.md` already has the row ("A client-routed site (Nuxt) shows its own 404…"), but it names only Nuxt. The agent's handoff (`build.md`) points the user at `cloudcannon dev` for the editor checks without that caveat, so a real user would hit it on every page of a SvelteKit site. The editor checks moved to the hosted site.
+- Local `cloudcannon dev`: every page shows the site's own 404 in the Visual Editor. Posts show "Unknown variable dynamic import: ../../../lib/posts/undefined.md". The dev server's editor template (`cc-tools/cli` `src/templates/editor.html`) fetches the page HTML and injects it into an iframe that has no `src`. The page's `location` is `/app/assets/e2e/omnipage/editor.html`, with `<base href="/__output/">`, so any client router matches the editor's path. Confirmed in Playwright on this site and on a plain static page that prints `location.pathname`. `cloudcannon-dev-server/troubleshooting.md` already has the row ("A client-routed site (Nuxt) shows its own 404…"), but it names only Nuxt. The agent's handoff (`build.md`) points the user at `cloudcannon dev` for the editor checks without that caveat, so a real user would hit it on every page of a SvelteKit site. The editor checks moved to the hosted site.
+
+- Hosted: pushed to `tomrcc/cc-skills-test-sveltekit-blog-starter`. The build succeeds, and the Visual Editor shows pages with no 404.
+- No site-side fix: the page's `location` belongs to the editor template, not to any output URL. Tom chose a dev-server fix and an issue for `cc-tools/cli`.
+- Hosted editor, "A Markdown post with a Svelte component": the body, including the Callout, is one editable rich-text area. Tom found nothing else off apart from the next item.
+- Hosted editor, "Syntax highlighting with mdsvex": the two code blocks that show fence syntax (`\```css … \```` inside a plain fence) render empty in the Visual Editor. The built page renders them (mdsvex outputs ```` ```css ````). The audit flagged these escaped fences, and `markdown.options.escape_snippets_in_code_blocks` is on. Opening the post without touching it leaves Save clean.
+- Save of "Syntax highlighting with mdsvex" after one paragraph edit (commit `64bb85f`):
+  - The escaped fences (`\```css` and `\```js` inside plain fences) are unchanged in the file. Their empty blocks are an editor display problem only.
+  - The `date:` line becomes `date: 2023-01-05T00:00:00Z` (and `updated:` the same). The site's `formatDate.js` cuts it back, so the post still prints `2023-01-05` and the build passes.
+  - The editor also adds `_schema: default`, unquotes strings, removes the blank line after the front matter, adds one before a fence that followed text directly, and drops the final newline.
+- Hosted editor, Contact Rich Text block (`{@html}` inside the region host): an inline edit stays after clicking out and back in.
+- Hosted editor, Contact Form block choices (array of strings, Svelte 5): "Add item" adds a new choice on the page.
+- Hosted editor, header nav: a label edit ("About" → "About Us") saved to `src/lib/data/navigation.json` (commit `2d41035`), which CloudCannon reformatted to one key per line. The same save carried the earlier Contact edits: the Rich Text block (HTML in YAML), a Callout `<br />`, and the "Add item" choice. The build passes.
+- Contact form markup: `method="post"`, no `action`, no `_gotcha` honeypot, and the hidden `inbox_key` only when set. The Inbox docs ("Connecting your site to an Inbox") use `action` as the post-submit redirect and include `_gotcha`, but don't say what happens without `action`. Without `inbox_key`, a submission goes to the Inbox linked to the site.
+- Save of "A Markdown post with a Svelte component" (commit `4779b1e`): the `<Callout>` survives as a paired snippet, joined onto one line (`<Callout>…<code>…</code></Callout>`). The build passes and the Callout renders. The editor also turns `_inside_` into `*inside*`, and makes the same front-matter and date changes as the syntax post.
+
+All editor checks for this site are done. Tom skipped the Inbox form check (out of scope: it would test CloudCannon forms, not the skills).
+
+## Fix round 1: empty code blocks in the Visual Editor
+
+- Sent to the migration agent as a symptom only.
+- Cause found: the editor renders `@content` fences without the highlighter's `language-*` class. Plain fences become a bare `<pre><code>`, and the site's `code { color: var(--darker) }` draws the text dark on the dark `pre` background. Built pages always carry `language-*` (mdsvex adds `language-undefined`), so Prism's colours apply there.
+- Fix: `pre code { color: inherit; }` in `static/css/code.css`. The built site is unchanged and the build passes.
+- The agent reproduced the problem without the hosted editor. It built a minimal static test site on `cloudcannon dev` (which the 404 bug doesn't affect) and checked computed colours in Playwright before and after the fix.
+- Skill gaps it named:
+  - Nothing says the editor draws `@content` code blocks without the SSG's highlighter classes, so site CSS that relies on them can hide the text.
+  - The audit flagged the file only as a save risk.
+  - `cloudcannon-dev-server` says to ask the user rather than drive the editor. The minimal-site approach worked and could be documented.
+- Not fixed, by choice: the editor shows the backslashes (`\```css`), while mdsvex drops them on the built page. A four-backtick outer fence would fix that but changes content, and isn't tested against an editor save.
