@@ -1,7 +1,16 @@
 {
   "items": [
-    { "title": "Blog", "route": "/blog" },
-    { "title": "About", "route": "/about" },
-    { "title": "Contact", "route": "/contact" }
+    {
+      "title": "Blog",
+      "route": "/blog"
+    },
+    {
+      "title": "About Us",
+      "route": "/about"
+    },
+    {
+      "title": "Contact",
+      "route": "/contact"
+    }
   ]
 }
